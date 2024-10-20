@@ -7,7 +7,7 @@ export class CtrlService {
 
     constructor() {
         // MQTT 브로커에 연결
-        this.client = mqtt.connect('mqtt://your-mqtt-broker-url');
+        this.client = mqtt.connect('mqtt://localhost:1883');
 
         this.client.on('connect', () => {
             console.log('Connected to MQTT broker');
@@ -33,8 +33,20 @@ export class CtrlService {
                 case 'forward':
                     message = 'forward';
                     break;
+                case 'forward-left':
+                    message = 'forward-left';
+                    break;
+                case 'forward-right':
+                    message = 'forward-right';
+                    break;
                 case 'back':
                     message = 'back';
+                    break;
+                case 'back-left':
+                    message = 'back-left';
+                    break;
+                case 'back-right':
+                    message = 'back-right';
                     break;
                 case 'fall':
                     message = 'fall';

@@ -1,37 +1,55 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-
-interface User {
-  username: string;
-  password: string;
-  adress: string;
-  adress_detail: string;
-}
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  private users: User[] = [];
-  
-  register(username: string, password: string , adress : string , adress_detail : string) {
-    const usernameRegex =  /^[a-zA-Z]\w{2,7}$/u;
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async register(username: string, password: string, adress: string, adress_detail: string): Promise<string> {
+    const usernameRegex = /^[a-zA-Z]\w{2,7}$/u;
     if (!usernameRegex.test(username)) {
       throw new BadRequestException('ID regex Error');
     }
-    const user = this.users.find(user => user.username === username);
-    
-    if (user) {
+
+    const userExists = await this.userRepository.findOne({ where: { username } });
+    if (userExists) {
       throw new BadRequestException('User already exists');
     }
-    this.users.push({ username, password, adress, adress_detail });
+
+    // 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 새로운 사용자 생성 (coins 필드 기본값 포함)
+    const user = this.userRepository.create({ 
+      username, 
+      password: hashedPassword,  // 해싱된 비밀번호 저장
+      adress, 
+      adress_detail,
+      coins: 3,  // 기본값 설정
+    });
+    await this.userRepository.save(user);
     
-    return "Resister success";
+    return 'Register success';
   }
 
-  login(username: string, password: string): string {
-
-    const user = this.users.find(user => user.username === username && user.password === password);
+  async login(username: string, password: string): Promise<string> {
+    const user = await this.userRepository.findOne({ where: { username } });
     if (!user) {
-      throw new Error('Not a member');
+      throw new BadRequestException('Not a member');
     }
+
+    // 비밀번호 검증
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid password');
+    }
+
     return 'Login success';
   }
 }
