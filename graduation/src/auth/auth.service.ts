@@ -52,4 +52,16 @@ export class AuthService {
 
     return 'Login success';
   }
+  async deductCoins(username: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { username } });
+    if (!user) {
+        throw new Error('User not found');
+    }
+    if (user.coins <= 0) {
+        throw new Error('Insufficient coins');
+    }
+
+    user.coins -= 1;
+    await this.userRepository.save(user);
+  }
 }
