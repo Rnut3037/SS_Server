@@ -1,3 +1,4 @@
+// auth.controller.ts
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
@@ -11,7 +12,7 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() body: { username: string; password: string }): Promise<string> {
+  async login(@Body() body: { username: string; password: string }): Promise<{ accessToken: string }> {
     return await this.authService.login(body.username, body.password);
   }
 }

@@ -11,7 +11,7 @@ export class CtrlController {
         console.log(controlData);   
 
         try {
-            await this.ctrlService.sendControlMessage(dir,userId);
+            await this.ctrlService.sendControlMessage(userId,dir);
             return `Control message sent via MQTT: ${dir}`;
         } catch (error) {
             return `Error sending control message via MQTT: ${error.message}`;

@@ -9,7 +9,7 @@ export class CtrlService {
 
     constructor(private readonly authService: AuthService) {
         // MQTT 브로커에 연결
-        this.client = mqtt.connect('mqtt://localhost:1883');
+        this.client = mqtt.connect('http://138.2.114.212/1880/');
 
         this.client.on('connect', () => {
             this.logger.log('MQTT 브로커에 연결됨');

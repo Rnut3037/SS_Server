@@ -7,8 +7,8 @@ import { CtrlController } from './ctrl.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]), // 필요시 여기에 User 엔티티 등록
-    AuthModule, // AuthModule 임포트
+    TypeOrmModule.forFeature([User]),
+    AuthModule,
   ],
   providers: [CtrlService],
   controllers: [CtrlController]

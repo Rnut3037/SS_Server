@@ -3,12 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    
+    private readonly jwtService: JwtService, // JwtService 주입
   ) {}
 
   async register(username: string, password: string, adress: string, adress_detail: string): Promise<string> {
@@ -22,36 +26,37 @@ export class AuthService {
       throw new BadRequestException('User already exists');
     }
 
-    // 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 새로운 사용자 생성 (coins 필드 기본값 포함)
     const user = this.userRepository.create({ 
       username, 
-      password: hashedPassword,  // 해싱된 비밀번호 저장
+      password: hashedPassword,  
       adress, 
       adress_detail,
-      coins: 3,  // 기본값 설정
+      coins: 3,  
     });
     await this.userRepository.save(user);
     
     return 'Register success';
   }
 
-  async login(username: string, password: string): Promise<string> {
+  async login(username: string, password: string): Promise<{ accessToken: string }> {
     const user = await this.userRepository.findOne({ where: { username } });
     if (!user) {
       throw new BadRequestException('Not a member');
     }
 
-    // 비밀번호 검증
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new BadRequestException('Invalid password');
     }
 
-    return 'Login success';
+    const payload = { username: user.username, sub: user.id };
+    const accessToken = this.jwtService.sign(payload);
+
+    return { accessToken };
   }
+
   async deductCoins(username: string): Promise<void> {
     const user = await this.userRepository.findOne({ where: { username } });
     if (!user) {
