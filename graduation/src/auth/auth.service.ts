@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -58,15 +58,17 @@ export class AuthService {
   }
 
   async deductCoins(username: string): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { username } });
+ 
+
+    const user: User = await this.userRepository.findOne({ where: { username } });
     if (!user) {
-        throw new Error('User not found');
+        throw new NotFoundException('User not found');
     }
     if (user.coins <= 0) {
-        throw new Error('Insufficient coins');
+        throw new BadRequestException('Insufficient coins');
     }
 
     user.coins -= 1;
     await this.userRepository.save(user);
-  }
+}
 }
