@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -71,4 +71,20 @@ export class AuthService {
     user.coins -= 1;
     await this.userRepository.save(user);
 }
+
+async getCoins(token:string): Promise<number>{
+  console.log(token);
+  let username: string;
+  const decoded = this.jwtService.verify(token);
+  username = decoded.username; // JWT에서 username 추출
+
+  const user: User = await this.userRepository.findOne({ where: { username } });
+    if (!user) {
+        throw new NotFoundException('User not found');
+    }
+    else{
+     return user.coins
+    }
+
+  }
 }
