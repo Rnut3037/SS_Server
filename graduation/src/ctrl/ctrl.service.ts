@@ -35,7 +35,7 @@ export class CtrlService {
 
         console.log(username, dir, status);
 
-        const validDirections = ['left', 'right', 'forward', 'forward-left', 'forward-right', 'back', 'back-left', 'back-right', 'fall'];
+        const validDirections = ['left', 'right', 'forward', 'back', 'fall'];
         
         if (!validDirections.includes(dir)) {
             throw new BadRequestException(`유효하지 않은 방향: ${dir}`);
@@ -43,15 +43,6 @@ export class CtrlService {
         let message= dir + "status" +status;
 
         this.logger.log(`메시지 발행: ${message}`);
-
-        // dir 값이 'fall'일 경우 코인 차감
-        if (dir === 'fall') {
-            try {
-                await this.authService.deductCoins(username); // 유저의 코인 차감
-            } catch (error) {
-                throw new BadRequestException(error.message); // 에러 메시지 반환
-            }
-        }
 
         // MQTT에 메시지 발행
         return new Promise((resolve, reject) => {
