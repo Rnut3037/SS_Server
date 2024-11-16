@@ -19,4 +19,7 @@ export class User {
 
   @Column({ type: 'int', default: 3 })  
   coins: number;
+
+  @Column({type: 'tinyint', default: 0 })  
+  admin: number;
 }

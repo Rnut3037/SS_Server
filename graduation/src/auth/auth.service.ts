@@ -58,8 +58,6 @@ export class AuthService {
   }
 
   async deductCoins(username: string): Promise<void> {
- 
-
     const user: User = await this.userRepository.findOne({ where: { username } });
     if (!user) {
         throw new NotFoundException('User not found');
@@ -70,6 +68,20 @@ export class AuthService {
 
     user.coins -= 1;
     await this.userRepository.save(user);
+}
+
+async insertCoins(token: string): Promise<number> {
+  let username: string;
+  const decoded = this.jwtService.verify(token);
+  username = decoded.username; // JWT에서 username 추출
+  const user: User = await this.userRepository.findOne({ where: { username } });
+  if (!user) {
+      throw new NotFoundException('User not found');
+  }
+
+  user.coins += 1;
+  await this.userRepository.save(user);
+  return user.coins;
 }
 
 async getCoins(token:string): Promise<number>{
@@ -83,7 +95,7 @@ async getCoins(token:string): Promise<number>{
         throw new NotFoundException('User not found');
     }
     else{
-     return user.coins
+     return user.coins;
     }
 
   }

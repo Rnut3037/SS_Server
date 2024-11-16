@@ -20,14 +20,45 @@ export class AuthController {
   async getCoin(@Headers('authorization') authHeader: string):Promise<string>{
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException('Authorization 헤더가 필요합니다.');
+    }
+    const token = authHeader.split(' ')[1]; // 'Bearer <token>' 형식에서 토큰 부분 추출
+    try {
+      const leftCoin = await this.authService.getCoins(token)
+      return `coin left : ${leftCoin}`
+    }
+    catch {
+      return "Cannot find user"
+    }
   }
-  const token = authHeader.split(' ')[1]; // 'Bearer <token>' 형식에서 토큰 부분 추출
-  try {
-    const leftCoin = await this.authService.getCoins(token)
-    return `coin left : ${leftCoin}`
+
+  @Post("coin/insert")
+  async insertCoin(@Headers('authorization') authHeader: string){
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Authorization 헤더가 필요합니다.');
+    }
+    let username: string;
+    const token = authHeader.split(' ')[1]; // 'Bearer <token>' 형식에서 토큰 부분 추출
+    try {
+      const leftCoin = await this.authService.insertCoins(token)
+      return `coin left : ${leftCoin}`
+    }
+    catch{
+      return "failed"
+    }
   }
-  catch {
-    return "Cannot find user"
-  }
+  @Post("coin/deduct")
+  async deductCoin(@Headers('authorization') authHeader: string){
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Authorization 헤더가 필요합니다.');
+    }
+    let username: string;
+    const token = authHeader.split(' ')[1]; // 'Bearer <token>' 형식에서 토큰 부분 추출
+    try {
+      const leftCoin = await this.authService.deductCoins(token)
+      return `coin left : ${leftCoin}`
+    }
+    catch{
+      return "failed"
+    }
   }
 }
