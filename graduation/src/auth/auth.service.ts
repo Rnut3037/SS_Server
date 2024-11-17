@@ -57,17 +57,18 @@ export class AuthService {
     return { accessToken };
   }
 
-  async deductCoins(username: string): Promise<void> {
+  async deductCoins(token: string): Promise<number> {
+    let username: string;
+    const decoded = this.jwtService.verify(token);
+    username = decoded.username; // JWT에서 username 추출
     const user: User = await this.userRepository.findOne({ where: { username } });
     if (!user) {
         throw new NotFoundException('User not found');
     }
-    if (user.coins <= 0) {
-        throw new BadRequestException('Insufficient coins');
-    }
-
+  
     user.coins -= 1;
     await this.userRepository.save(user);
+    return user.coins;
 }
 
 async insertCoins(token: string): Promise<number> {
