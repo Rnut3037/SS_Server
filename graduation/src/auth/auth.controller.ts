@@ -36,7 +36,6 @@ export class AuthController {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException('Authorization 헤더가 필요합니다.');
     }
-    let username: string;
     const token = authHeader.split(' ')[1]; // 'Bearer <token>' 형식에서 토큰 부분 추출
     try {
       const leftCoin = await this.authService.insertCoins(token)
@@ -51,7 +50,6 @@ export class AuthController {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException('Authorization 헤더가 필요합니다.');
     }
-    let username: string;
     const token = authHeader.split(' ')[1]; // 'Bearer <token>' 형식에서 토큰 부분 추출
     try {
       const leftCoin = await this.authService.deductCoins(token)
