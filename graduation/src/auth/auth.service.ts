@@ -33,7 +33,8 @@ export class AuthService {
       password: hashedPassword,  
       adress, 
       adress_detail,
-      coins: 3,  
+      coins: 3,
+      admin: 0
     });
     await this.userRepository.save(user);
     
@@ -86,7 +87,6 @@ async insertCoins(token: string): Promise<number> {
 }
 
 async getCoins(token:string): Promise<number>{
-  console.log(token);
   let username: string;
   const decoded = this.jwtService.verify(token);
   username = decoded.username; // JWT에서 username 추출
