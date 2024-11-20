@@ -42,7 +42,9 @@ export class CtrlService {
         }
         let message= dir + status;
         this.logger.log(`메시지 발행: ${message}`);
-
+        if (dir === "fall"){
+            await this.authService.deductCoins(token);
+        }
         // MQTT에 메시지 발행
         return new Promise((resolve, reject) => {
             this.client.publish('control/topic', message, (error) => {
