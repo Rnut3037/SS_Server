@@ -17,8 +17,20 @@ export class AuthService {
 
   async register(username: string, password: string, adress: string, adress_detail: string): Promise<string> {
     const usernameRegex = /^[a-zA-Z]\w{2,7}$/u;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /*
+    비밀번호 제한사항
+    영문 대문자 포함
+    영문 소문자 포함
+    숫자 포함
+    특수문자 포함
+    조건 모두 만족시 유효한 비밀번호
+    */
     if (!usernameRegex.test(username)) {
       throw new BadRequestException('ID regex Error');
+    }
+    if (!passwordRegex.test(password)) {
+      throw new BadRequestException('password regex Error');
     }
 
     const userExists = await this.userRepository.findOne({ where: { username } });
