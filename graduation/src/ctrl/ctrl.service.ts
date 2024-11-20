@@ -40,8 +40,7 @@ export class CtrlService {
         if (!validDirections.includes(dir)) {
             throw new BadRequestException(`유효하지 않은 방향: ${dir}`);
         }
-        let message= dir + "status" +status;
-
+        let message= dir + status;
         this.logger.log(`메시지 발행: ${message}`);
 
         // MQTT에 메시지 발행

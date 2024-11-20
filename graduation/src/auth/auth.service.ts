@@ -47,7 +47,10 @@ export class AuthService {
       throw new BadRequestException('Not a member');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    console.log(isPasswordValid);
+    console.log(password,user.password);
+
     if (!isPasswordValid) {
       throw new BadRequestException('Invalid password');
     }
