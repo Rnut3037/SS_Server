@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CtrlModule } from './ctrl/ctrl.module';
 import { User } from './auth/user.entity';
-import { AppGateway } from './app.gateway';
+import { AppGateway } from './app.gateway2';
 
 @Module({
   imports: [

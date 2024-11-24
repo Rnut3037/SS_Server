@@ -12,7 +12,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
   private totalRooms: { [key: string]: { users: string[] } } = {};
 
   // Gateway 초기화
-  afterInit(server: Server) {
+  afterInit(server: Server) {   
     console.log('WebSocket server initialized');
   }
 
