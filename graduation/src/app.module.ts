@@ -6,7 +6,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CtrlModule } from './ctrl/ctrl.module';
 import { User } from './auth/user.entity';
-import { SocketGateway } from './app.gateway2';
 
 @Module({
   imports: [
@@ -26,6 +25,6 @@ import { SocketGateway } from './app.gateway2';
     CtrlModule, 
   ],
   controllers: [AppController],
-  providers: [AppService,SocketGateway],
+  providers: [AppService],
 })
 export class AppModule {}
