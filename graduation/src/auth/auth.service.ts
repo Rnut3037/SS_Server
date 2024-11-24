@@ -41,7 +41,6 @@ export class AuthService {
       admin: 0
     });
     await this.userRepository.save(user);
-    
     return 'Register success';
   }
 
